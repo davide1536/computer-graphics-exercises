@@ -1,12 +1,9 @@
-/*
- * OpenGL: push/pop example
- */
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <stdio.h>
 #include <math.h>
 
-#define ELEMENTS    9       // 8 planets + 1 star
+#define ELEMENTS    2       // 8 planets + 1 star
 
 #define SLICES      100
 #define STACKS      20
@@ -24,38 +21,38 @@
 
 GLfloat elementsSize[ELEMENTS] = {
     SUN,
-    MERCURY,
+    /* MERCURY,
     VENUS,
     EARTH,
     MARS,
-    JUPITER,
-    SATURN,
+     */JUPITER,
+    /* SATURN,
     URANUS,
-    NEPTUNE
+    NEPTUNE */
 };
 
 GLfloat elementsColor[ELEMENTS][3] = {
     {1.0, 1.0, 0.0},
-    {0.5, 0.3, 0.0},
+    {0.5, 0.3, 0.0}/* ,
     {1.0, 0.5, 0.0},
     {0.0, 0.0, 1.0},
     {1.0, 0.2, 0.0},
     {1.0, 0.5, 0.0},
     {1.0, 0.7, 0.0},
     {0.7, 0.7, 1.0},
-    {0.3, 0.3, 1.0}
+    {0.3, 0.3, 1.0} */
 };
 
 GLfloat elementsTranslate[ELEMENTS][3] = {
     {0.0, 0.0, -16.0},
-    {0.0, 0.0, -13.0},
+    {0.0, 0.0, -13.0}/* ,
     {0.0, 0.0, -12.0},
     {0.0, 0.0, -10.5},
     {0.0, 0.0, -9.0},
     {0.0, 0.0, -7.5},
     {0.0, 0.0, -5.5},
     {0.0, 0.0, -3.5},
-    {0.0, 0.0, -2.0}
+    {0.0, 0.0, -2.0} */
 };
 
 // display routine
@@ -69,8 +66,9 @@ void display(void) {
     // draw wireframe sphere
     GLUquadric *quad;
     quad = gluNewQuadric();
-
-    for (int i = 0; i < ELEMENTS; i++) {  
+    
+    // draw elements
+    for (int i = 0; i < ELEMENTS; i++) {
         glPushMatrix();
         
         // specify color
@@ -96,10 +94,6 @@ void init (void) {
     // select clearing color
     glClearColor(0.0, 0.0, 0.0, 0.0);
 
-    // VBO for colorArray
-    // enable color array
-    glEnableClientState(GL_COLOR_ARRAY);
-
     // Enable depth test
     glEnable(GL_DEPTH_TEST);
 
@@ -120,7 +114,6 @@ void init (void) {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(10,1,-10,0,0,-10,0,1,0);
-
 }
 
 // Keyboard input processing routine.
