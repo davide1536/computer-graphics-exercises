@@ -503,9 +503,9 @@ int main(int argc, char** argv)
     // GLUT_SINGLE = single buffer window
     glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB|GLUT_DEPTH);
 
-    glutInitWindowSize (400, 400);
-    glutInitWindowPosition (100, 100);
-    glutCreateWindow ("OpenGL Window");
+    glutInitWindowSize(400, 400);
+    glutInitWindowPosition(100, 100);
+    glutCreateWindow("OpenGL Window");
 
     GLenum err = glewInit();
     if (GLEW_OK != err) {

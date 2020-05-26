@@ -100,27 +100,6 @@ void display(void)
     glClear(GL_COLOR_BUFFER_BIT);
 
     for(currLineInd = 0; currLineInd<NLINES; currLineInd++) {
-        // draw line
-        /* 
-            glBegin(GL_LINE_STRIP);
-            // random color
-            glColor3f((float)rand()/RAND_MAX, (float)rand()/RAND_MAX, (float)rand()/RAND_MAX);
-            // random first point
-            glVertex3f(-((float)rand()/RAND_MAX), -((float)rand()/RAND_MAX), -1);
-            // random color
-            glColor3f((float)rand()/RAND_MAX, (float)rand()/RAND_MAX, (float)rand()/RAND_MAX);
-            // random second point
-            glVertex3f((float)rand()/RAND_MAX, (float)rand()/RAND_MAX, -1);
-
-            glColor3f((float)rand()/RAND_MAX, (float)rand()/RAND_MAX, (float)rand()/RAND_MAX);
-            glVertex3f((float)rand()/RAND_MAX, -((float)rand()/RAND_MAX), -1);
-            
-            glColor3f((float)rand()/RAND_MAX, (float)rand()/RAND_MAX, (float)rand()/RAND_MAX);
-            glVertex3f(-((float)rand()/RAND_MAX), (float)rand()/RAND_MAX, -1);
-
-            glEnd(); 
-        */
-
         glBegin(GL_LINES);
             // random color
             glColor3f((float)rand()/RAND_MAX, (float)rand()/RAND_MAX, (float)rand()/RAND_MAX);
@@ -146,14 +125,7 @@ void init (void)
     // select clearing color
     glClearColor(0.0, 0.0, 0.0, 0.0);
 
-    // Orthographic projection
-    //glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, -1.0);
     glFrustum(0.0, 1.0, 0.0, 1.0, 1.0, 1.0001);
-
-    if (glGetError() != GL_NO_ERROR) {
-        fprintf(stderr, "[E] glFrustum\n");
-        //exit(2);
-    }
 }
 
 // Window size and mode

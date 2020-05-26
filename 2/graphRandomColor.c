@@ -71,12 +71,6 @@ int computeAndShowFrameRate(void)
 
         // update variable lastTime
         lastTime = currentTime;
-
-        //circularBuffer[firstInd] = (float)frameCount;
-        // firstInd = ((firstInd+1)%NELS);
-        // if (nEls < NELS) {
-        //     nEls++;
-        // }
         frameCount = 0;
 
         // sum elements in circular buffer
@@ -131,14 +125,12 @@ void display(void)
     computeAndShowFrameRate();
     // clear buffer
     //glClearColor ((float)rand()/RAND_MAX,(float)rand()/RAND_MAX,(float)rand()/RAND_MAX, 0.0);
-    glClear (GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT);
     
-    /* if(counter < X_POINTS)  // this will allow the curve to end with the last X axis point (specified by X_POINT)
+    if(counter < X_POINTS)  // this will allow the curve to end with the last X axis point (specified by X_POINT)
         drawLines();
     else
-        drawSimplePlot(); */
-
-    counter < X_POINTS ? drawLines() : drawSimplePlot();
+        drawSimplePlot();
 
     glFinish();
     glutSwapBuffers();
