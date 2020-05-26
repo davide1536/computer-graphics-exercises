@@ -16,7 +16,7 @@
 #define MERCURY     0.07   // 0.2
 #define VENUS       0.094  // 0.4
 #define EARTH       0.1    // 0.6
-#define MARS        0.6    // 0.5
+#define MARS        0.06    // 0.5
 #define JUPITER     1.1    // 0.8
 #define SATURN      0.94   // 0.7
 #define URANUS      0.4    // 0.6
@@ -47,14 +47,14 @@ GLfloat elementsColor[ELEMENTS][3] = {
 };
 
 GLfloat elementsTranslate[ELEMENTS][3] = {
-    {0.0, 0.0, -16.0},
-    {0.0, 0.0, -13.0},
+    {0.0, 0.0, -15.0},
+    {0.0, 0.0, -12.5},
     {0.0, 0.0, -12.0},
-    {0.0, 0.0, -10.5},
-    {0.0, 0.0, -9.0},
+    {0.0, 0.0, -11.0},
+    {0.0, 0.0, -10.0},
     {0.0, 0.0, -7.5},
-    {0.0, 0.0, -5.5},
-    {0.0, 0.0, -3.5},
+    {0.0, 0.0, -5.0},
+    {0.0, 0.0, -3.0},
     {0.0, 0.0, -2.0}
 };
 
@@ -108,7 +108,7 @@ void init (void) {
     glLoadIdentity();
 
     // set viewing frustum
-    glFrustum(-1.5, 1.5, -1.5, 1.5, 1, 20.0);
+    glFrustum(-1.5, 1.5, -1.5, 1.5, 1, 16.0);
 
     // ... it does not hurt to check that everything went OK
     if((glErr=glGetError()) != 0) {
@@ -119,7 +119,7 @@ void init (void) {
     // initialize model view transforms
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(10,1,-10,0,0,-10,0,1,0);
+    gluLookAt(3,5,0,0,0,-10,0,1,0);
 
 }
 
