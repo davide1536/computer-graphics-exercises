@@ -11,10 +11,11 @@
 GLfloat startEndPoints[2][3] =
 {{0.0, 0.0, 0.0}, {0.0, 0.0, -4.0}};
 
+GLfloat currPos[2];
 static float currAlpha = 0;
 
 void uploadPosition(int value) {
-    glutTimerFunc(600/60,uploadPosition, 0);
+    glutTimerFunc(1000/60,uploadPosition, 0);
     currAlpha += DELTA;
     if (currAlpha > 1.0) currAlpha = 0.0;
             glutPostRedisplay();
@@ -22,7 +23,7 @@ void uploadPosition(int value) {
 // display routine
 void display(void)
 {
-    GLfloat currPos[2];
+    
     // push initial state on the stack
     glPushMatrix();
 
@@ -38,18 +39,20 @@ void display(void)
     GLUquadric *quad;
     quad = gluNewQuadric();                                                             
     gluSphere(quad,2.0,100,20);
-
+    
     glPopMatrix();
     glPushMatrix();
 
-    currPos[0] = 15*cos(currAlpha * 2 * M_PI);
-    currPos[1] = 5*sin(currAlpha * 2 * M_PI);
-    printf("pos = %f \n", currPos[0]);
-    glTranslatef(0.0+currPos[0], 0.0,  -12.0+currPos[1]);
-
-    glColor3f(0.3, 0.3, 1.0);  
-                                            
-    gluSphere(quad,0.388,100,20);
+    for (int i = 0; i<2; i++) {
+        glPushMatrix();
+        currPos[0] = 15*cos(currAlpha * 2 * M_PI);
+        currPos[1] = 5*sin(currAlpha * 2 * M_PI);
+        printf("pos = %f \n", currPos[0]);
+        glTranslatef(0.0+currPos[0], 0.0,  -12.0+currPos[1]);
+        glColor3f(0.3, 0.3, 1.0);                          
+        gluSphere(quad,0.388,100,20);
+        glPopMatrix();
+    }
 
     // glPopMatrix();
     // glPushMatrix();

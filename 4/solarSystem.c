@@ -19,6 +19,10 @@
 #define URANUS      0.4    // 0.6
 #define NEPTUNE     0.388  // 0.5
 
+#define DELTA   (1.0/500.0)
+
+static float currAlpha = 0;
+
 GLfloat elementsSize[ELEMENTS] = {
     SUN,
     /* MERCURY,
@@ -44,31 +48,32 @@ GLfloat elementsColor[ELEMENTS][3] = {
 };
 
 GLfloat elementsTranslate[ELEMENTS][3] = {
-<<<<<<< HEAD
-    {0.0, 0.0, -15.0},
-    {0.0, 0.0, -12.5},
-=======
     {0.0, 0.0, -16.0},
     {0.0, 0.0, -13.0}/* ,
->>>>>>> 742cb66f4b879df366eb0fcbffe11eb031213893
     {0.0, 0.0, -12.0},
     {0.0, 0.0, -11.0},
     {0.0, 0.0, -10.0},
     {0.0, 0.0, -7.5},
-<<<<<<< HEAD
-    {0.0, 0.0, -5.0},
-    {0.0, 0.0, -3.0},
-    {0.0, 0.0, -2.0}
-=======
     {0.0, 0.0, -5.5},
     {0.0, 0.0, -3.5},
     {0.0, 0.0, -2.0} */
->>>>>>> 742cb66f4b879df366eb0fcbffe11eb031213893
+};
+GLfloat parameterTranslation[ELEMENTS][2] = {
+    //first and second value are the orbits' major and minor axis respectively
+    {3,2},
+    {9,7}    
 };
 
+
+void uploadPosition(int value) {
+    glutTimerFunc(600/60,uploadPosition, 0);
+    currAlpha += DELTA;
+    if (currAlpha > 1.0) currAlpha = 0.0;
+            glutPostRedisplay();
+}
 // display routine
 void display(void) {
-
+    GLfloat currPos[2];
     // push initial state on the stack
     glPushMatrix();
 
@@ -84,9 +89,15 @@ void display(void) {
         
         // specify color
         glColor3f(elementsColor[i][0], elementsColor[i][1], elementsColor[i][2]);
-        
+        if (i != 0) { 
+        currPos[0] = parameterTranslation[i][0]*cos(currAlpha * 2 * M_PI);
+        currPos[1] = parameterTranslation[i][1]*sin(currAlpha * 2 * M_PI);
         // specify translate coordinates to place the element in the scene
-        glTranslatef(elementsTranslate[i][0], elementsTranslate[i][1], elementsTranslate[i][2]);
+        glTranslatef(elementsTranslate[i][0]+currPos[0], elementsTranslate[i][1], elementsTranslate[i][2]+currPos[1]);
+        }
+        else {
+             glTranslatef(elementsTranslate[i][0], elementsTranslate[i][1], elementsTranslate[i][2]);
+        }
         
         // draw a sphere
         gluSphere(quad, elementsSize[i], SLICES, STACKS);
@@ -113,7 +124,7 @@ void init (void) {
     glLoadIdentity();
 
     // set viewing frustum
-    glFrustum(-1.5, 1.5, -1.5, 1.5, 1, 16.0);
+    glFrustum(-1.5, 1.5, -1.5, 1.5, 1, 40.0);
 
     // ... it does not hurt to check that everything went OK
     if((glErr=glGetError()) != 0) {
@@ -124,12 +135,8 @@ void init (void) {
     // initialize model view transforms
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-<<<<<<< HEAD
-    gluLookAt(3,5,0,0,0,-10,0,1,0);
-
-=======
-    gluLookAt(10,1,-10,0,0,-10,0,1,0);
->>>>>>> 742cb66f4b879df366eb0fcbffe11eb031213893
+    gluLookAt(10,15,-10,0,0,-10,0,1,0);
+    glutTimerFunc(1000/60,uploadPosition, 0);
 }
 
 // Keyboard input processing routine.
