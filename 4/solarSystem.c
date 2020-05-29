@@ -1,190 +1,194 @@
+/* TODO
+ * - glutWireTorus per le orbite dei pianeti
+ * -
+ */
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <stdio.h>
 #include <math.h>
 
-#define ELEMENTS    2       // 8 planets + 1 star
+void initPlanets(void);
+void init(void);
+void drawPlanets(void);
+void display(void);
+int  main(int, char**);
 
-#define SLICES      100
-#define STACKS      20
+#define PLANETS_MAX	9
 
-// di seguito sono lasciati commentati i valori non in scala
-#define SUN         2.0    // 1.7
-#define MERCURY     0.07   // 0.2
-#define VENUS       0.094  // 0.4
-#define EARTH       0.1    // 0.6
-#define MARS        0.06    // 0.5
-#define JUPITER     1.1    // 0.8
-#define SATURN      0.94   // 0.7
-#define URANUS      0.4    // 0.6
-#define NEPTUNE     0.388  // 0.5
+typedef struct _planet_t {
+	GLdouble radius,
+			 r,
+			 g,
+			 b,
+			 distance;
+    int     speed,
+            currentAngle;
+} Planet;
 
-#define DELTA   (1.0/500.0)
+static Planet planets[PLANETS_MAX];
+static int angle = 0;
 
-static float currAlpha = 0;
-
-GLfloat elementsSize[ELEMENTS] = {
-    SUN,
-    /* MERCURY,
-    VENUS,
-    EARTH,
-    MARS,
-     */JUPITER,
-    /* SATURN,
-    URANUS,
-    NEPTUNE */
-};
-
-GLfloat elementsColor[ELEMENTS][3] = {
-    {1.0, 1.0, 0.0},
-    {0.5, 0.3, 0.0}/* ,
-    {1.0, 0.5, 0.0},
-    {0.0, 0.0, 1.0},
-    {1.0, 0.2, 0.0},
-    {1.0, 0.5, 0.0},
-    {1.0, 0.7, 0.0},
-    {0.7, 0.7, 1.0},
-    {0.3, 0.3, 1.0} */
-};
-
-GLfloat elementsTranslate[ELEMENTS][3] = {
-    {0.0, 0.0, -16.0},
-    {0.0, 0.0, -13.0}/* ,
-    {0.0, 0.0, -12.0},
-    {0.0, 0.0, -11.0},
-    {0.0, 0.0, -10.0},
-    {0.0, 0.0, -7.5},
-    {0.0, 0.0, -5.5},
-    {0.0, 0.0, -3.5},
-    {0.0, 0.0, -2.0} */
-};
-GLfloat parameterTranslation[ELEMENTS][2] = {
-    //first and second value are the orbits' major and minor axis respectively
-    {3,2},
-    {9,7}    
-};
-
-
-void uploadPosition(int value) {
-    glutTimerFunc(600/60,uploadPosition, 0);
-    currAlpha += DELTA;
-    if (currAlpha > 1.0) currAlpha = 0.0;
-            glutPostRedisplay();
+void rotatePlanetAngle(int val) {
+    angle = (angle + 5) % 360;
+    glutPostRedisplay();
+    glutTimerFunc(1000/60, rotatePlanetAngle, angle);
 }
-// display routine
-void display(void) {
-    GLfloat currPos[2];
-    // push initial state on the stack
-    glPushMatrix();
 
-    // clear color and depth buffer
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // draw wireframe sphere
-    GLUquadric *quad;
-    quad = gluNewQuadric();
-    
-    // draw elements
-    for (int i = 0; i < ELEMENTS; i++) {
-        glPushMatrix();
+void drawPlanets() {
+	GLUquadric *quad;
+	quad = gluNewQuadric();
+
+	for(int i = 0; i < PLANETS_MAX; i++) {
+		glPushMatrix();
+		// color
+		glColor3f(planets[i].r, planets[i].g, planets[i].b);
         
-        // specify color
-        glColor3f(elementsColor[i][0], elementsColor[i][1], elementsColor[i][2]);
-        if (i != 0) { 
-        currPos[0] = parameterTranslation[i][0]*cos(currAlpha * 2 * M_PI);
-        currPos[1] = parameterTranslation[i][1]*sin(currAlpha * 2 * M_PI);
-        // specify translate coordinates to place the element in the scene
-        glTranslatef(elementsTranslate[i][0]+currPos[0], elementsTranslate[i][1], elementsTranslate[i][2]+currPos[1]);
-        }
-        else {
-             glTranslatef(elementsTranslate[i][0], elementsTranslate[i][1], elementsTranslate[i][2]);
-        }
+        // angle
+        glRotatef((GLfloat) angle, 0.0, 1.0, 0.0);        
+        // position
+		glTranslatef(planets[i].distance, 0.0, 0.0);
         
-        // draw a sphere
-        gluSphere(quad, elementsSize[i], SLICES, STACKS);
-        
-        glPopMatrix();
+		// sphere
+		glutWireSphere(planets[i].radius, 20, 20);
+
+		glPopMatrix();
+	}
+}
+
+void display() {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// push initial modelview matrix
+	glPushMatrix();
+	
+	// draw elements in the scene
+	drawPlanets();
+
+	// pop initial modelview matrix
+	glPopMatrix();
+
+	// flush graphics objects immediately
+	glFlush();
+
+	//glutSwapBuffers();
+}
+
+void initPlanets() {
+	// Sun
+	planets[0].r		= 1.0;
+	planets[0].g		= 1.0;
+	planets[0].b		= 0.0;
+	planets[0].radius	= 5.0;
+	planets[0].distance	= 0.0;
+
+	// Mercury
+	planets[1].r		= 0.5;
+	planets[1].g		= 0.3;
+	planets[1].b		= 0.0;
+	planets[1].radius	= 1.0;
+	planets[1].distance	= 7.0;
+
+	// Venus
+	planets[2].r		= 1.0;
+	planets[2].g		= 0.5;
+	planets[2].b		= 0.0;
+	planets[2].radius	= 1.5;
+	planets[2].distance	= 11.0;
+
+	// Earth
+	planets[3].r		= 0.0;
+	planets[3].g		= 0.0;
+	planets[3].b		= 1.0;
+	planets[3].radius	= 2.0;
+	planets[3].distance	= 16.0;
+
+	// Mars
+	planets[4].r		= 1.0;
+	planets[4].g		= 0.2;
+	planets[4].b		= 0.0;
+	planets[4].radius	= 1.2;
+	planets[4].distance	= 21.0;
+
+	// Jupiter
+	planets[5].r		= 1.0;
+	planets[5].g		= 0.5;
+	planets[5].b		= 0.0;
+	planets[5].radius	= 3.5;
+	planets[5].distance	= 28.0;
+
+	// Saturn
+	planets[6].r		= 1.0;
+	planets[6].g		= 0.7;
+	planets[6].b		= 0.0;
+	planets[6].radius	= 3.0;
+	planets[6].distance	= 37.0;
+
+	// Uranus
+	planets[7].r		= 0.7;
+	planets[7].g		= 0.7;
+	planets[7].b		= 1.0;
+	planets[7].radius	= 2.5;
+	planets[7].distance	= 45.5;
+
+	// Neptune
+	planets[8].r		= 0.3;
+	planets[8].g		= 0.3;
+	planets[8].b		= 1.0;
+	planets[8].radius	= 2.3;
+	planets[8].distance	= 53.6;
+}
+
+void init() {
+	GLenum glErr;
+
+	// initalize planet values
+	initPlanets();
+
+	// clearing color
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+
+	glEnable(GL_DEPTH_TEST);
+
+	// initialize viewing values
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	// set viewing frustum
+	glFrustum(-5.0, 5.0, -5.0, 5.0, 5.0, 120.0);
+
+	if((glErr=glGetError()) != 0) {
+        printf("[E](%d)\n", glErr);
+        exit(2);
     }
 
-    glFlush();
-    // redraw scene
-    //glutPostRedisplay();
+	// initialize model view transforms
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+    gluLookAt(0.0, 50, 50, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+    glutTimerFunc(1000/60, rotatePlanetAngle, angle);
 }
 
-void init (void) {
-    GLenum glErr;
-
-    // select clearing color
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-
-    // Enable depth test
-    glEnable(GL_DEPTH_TEST);
-
-    // initialize viewing values
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-
-    // set viewing frustum
-    glFrustum(-1.5, 1.5, -1.5, 1.5, 1, 40.0);
-
-    // ... it does not hurt to check that everything went OK
-    if((glErr=glGetError()) != 0) {
-        printf("Errore = %d \n", glErr);
-        exit(-1);
-    }
-
-    // initialize model view transforms
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(10,15,-10,0,0,-10,0,1,0);
-    glutTimerFunc(1000/60,uploadPosition, 0);
-}
-
-// Keyboard input processing routine.
-void keyInput(unsigned char key, int x, int y) {
-    switch(key) {
-        case 27:
-            // ESC
-            exit(0);
-            break;
-        case '1':
-            // Key 1
-            // update display
-            glutPostRedisplay();
-            break;
-        default:
-            // do nothing
-            break;
-    }
-}
-
-// Window size and mode
 int main(int argc, char** argv) {
-    // pass potential input arguments to glutInit
-    glutInit(&argc, argv);
 
-    // set display mode
-    // GLUT_SINGLE = single buffer window
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
+	glutInit(&argc, argv);
 
-    glutInitWindowSize(800, 800);
-    glutInitWindowPosition(200, 200);
-    glutCreateWindow ("OpenGL Window");
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
 
-    // keyboard handling function
-    glutKeyboardFunc(keyInput);
+	glutInitWindowSize(1366, 768);
+	glutInitWindowPosition(500, 300);
+	glutCreateWindow("Solar System");
 
-    // Here we add support for GLEW
-    GLenum err = glewInit();
-    if (GLEW_OK != err) {
-        printf("GLEW init failed: %s\n", glewGetErrorString(err));
-        exit(1);
-    } else {
-        printf("GLEW init success\n");
-    };
+	GLenum err = glewInit();
+	if(err != GLEW_OK) {
+		fprintf(stderr, "GLEW init failed: %s\n", glewGetErrorString(err));
+		exit(1);
+	}
 
-    // Call initialization routines
-    init();
-    glutDisplayFunc(display);
-    glutMainLoop();
-    return 0;   /* ANSI C requires main to return int. */
+	init();
+	glutDisplayFunc(display);
+
+	glutMainLoop();
+
+	return 0;
 }
