@@ -44,7 +44,8 @@ void drawPlanets() {
 		glColor3f(planets[i].r, planets[i].g, planets[i].b);
         
         // angle
-        glRotatef((GLfloat) angle, 0.0, 1.0, 0.0);        
+        glRotatef((GLfloat) angle, 0.0, 1.0, 0.0);   
+        
         // position
 		glTranslatef(planets[i].distance, 0.0, 0.0);
         
@@ -52,6 +53,12 @@ void drawPlanets() {
 		glutWireSphere(planets[i].radius, 20, 20);
 
 		glPopMatrix();
+        glPushMatrix();
+        glTranslatef(0.0, 0.0, 0.0);
+        glRotatef(90.0, 1.0, 0.0, 0.0);
+        glColor3f(0.8, 0.8, 0.8);
+        glutWireTorus(.001, planets[i].distance, 100.0, 100.0);
+        glPopMatrix();
 	}
 }
 
@@ -164,7 +171,7 @@ void init() {
 	// initialize model view transforms
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-    gluLookAt(0.0, 50, 50, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    gluLookAt(0.0, 70, 50, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
     glutTimerFunc(1000/60, rotatePlanetAngle, angle);
 }

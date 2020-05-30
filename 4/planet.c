@@ -61,14 +61,14 @@ void display(void)
 
    glPushMatrix();
    glColor3f(1.0, 1.0, 0.0);
-   glutSolidSphere(1.0, 20, 16);   /* draw sun */
+   glutWireSphere(1.0, 20, 16);   /* draw sun */
    glPopMatrix();
    glPushMatrix();
-   glRotatef ((GLfloat) year, 0.0, 1.0, 0.0);
+   glRotatef ((GLfloat) year, 0.0, 1.0, 0.0);  
    glTranslatef (2.0, 0.0, 0.0);
    glRotatef ((GLfloat) day, 0.0, 1.0, 0.0);
    glColor3f(0.0, 0.0, 1.0);
-   glutSolidSphere(0.2, 10, 8);    /* draw smaller planet */
+   glutWireSphere(0.2, 10, 8);    /* draw smaller planet */
    glPopMatrix();
    glutSwapBuffers();
 }
