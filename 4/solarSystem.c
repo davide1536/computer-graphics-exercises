@@ -107,22 +107,23 @@ GLdouble planetMaxOrbit[PLANETS_MAX][2] = {
 
 /* Materials (lighting). */
 PlanetMaterial planetMaterials[PLANETS_MAX] = {
-	{{0.5,0.0,1.0},{1.0,1.0,0.0,1.0},{0,0,0,1.0},{20.0}},
+	// {{0.5,0.0,1.0},{1.0,1.0,0.0,1.0},{0,0,0,1.0},{20.0}},
+
 	{{0.6,0.3,0.0,1.0},{0.4,0.3,0.5,1.0},{0,0,0,1.0},{20.6}},
 
 	{{0.74,0.59,0.074,1.0},{0.35,0.20,0.22,1.0},{0.0,0.0,0.0,1.0},{20.0}},
 
-	{{0.5,0.5,0.5,1.0},{0.5,0.5,0.5,1.0},{0,0,0,1.0},{20.0}},
+	{{0.1,0.18,0.17,0.8},{0.39,0.74,0.69,0.8},{0.29,0.30,0.30,1.0},{20.0}},
 
-	{{0.5,0.5,0.5,1.0},{0.5,0.5,0.5,1.0},{0,0,0,1.0},{20.0}},
+	{{0.19,0.07,0.02,1.0},{0.70,0.27,0.082,1.0},{0.25,0.13,0.08,1.0},{12.0}},
 
-	{{0.5,0.5,0.5,1.0},{0.5,0.5,0.5,1.0},{0,0,0,1.0},{20.0}},
+	{{0.25,0.14,0.06,1.0},{0.4,0.23,0.10,1.0},{0.77,0.45,0.20,1.0},{76.0}},
 
-	{{0.5,0.5,0.5,1.0},{0.5,0.5,0.5,1.0},{0,0,0,1.0},{20.0}},
+	{{0.25,0.20,0.20,0.92},{1.0,0.82,0.82,0.92},{0.29,0.29,0.29,1.0},{11.0}},
 
-	{{0.5,0.5,0.5,1.0},{0.5,0.5,0.5,1.0},{0,0,0,1.0},{20.0}},
+	{{0.0,0.1,0.06,1.0},{0.0,0.5,0.5,1.0},{0.5,0.5,0.5,1.0},{32.0}},
 	
-	{{0.5,0.5,0.5,1.0},{0.5,0.5,0.5,1.0},{0,0,0,1.0},{20.0}}
+	{{0.10,0.05,0.11,1.0},{0.42,0.47,0.54,1.0},{0.33,0.33,0.52,1.0},{9.84}}
 };
 
 static Planet planets[PLANETS_MAX];
@@ -180,7 +181,7 @@ void drawPlanets() {
 		glTranslatef(planets[i].x, planets[i].y, 0.0);
 
 		/* Assign a material to each planet */
-		#ifdef LIGHTING
+		
 			glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,   planets[i].material.matAmbient);
 			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,   planets[i].material.matDiffuse);
 			glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,  planets[i].material.matSpecular);
@@ -189,7 +190,7 @@ void drawPlanets() {
 			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, planetMaterials[i].matDiffuse);
 			glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, planetMaterials[i].matSpecular);
 			glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS,planetMaterials[i].shine); */
-		#endif
+		
 		
 
 		/* Draw a sphere */
@@ -207,10 +208,14 @@ void drawPlanets() {
 		glEnd(); */
 
 		// No, that won't work.
+		
 		glPushMatrix();
 		glTranslatef(0.0, 0.0, 0.0);
 		glRotatef(90.0, 1.0, 0.0, 0.0);
-		glColor3f(0.8, 0.8, 0.8);
+		//glColor3f(0.8, 0.8, 0.8);
+
+		glEnable(GL_LIGHT0);
+
 		glutWireTorus(.001, planets[i].xMaxOrbit, 100.0, 100.0);
 		glPopMatrix();
 	}
@@ -267,7 +272,7 @@ void init() {
 	// initalize planet values
 	initPlanets();
 
-	#ifdef LIGHTING
+	
 		// Light init
 		float globAmb[] = {0.0, 0.0, 0.0, 1.0};
 		float lightAmb[] = {0.2, 0.2,0.2, 1.0};
@@ -287,7 +292,7 @@ void init() {
 		glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
 		// Enable local viewpoint.
 		glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
-	#endif
+	
 
 	// clearing color
 	glClearColor(0.0, 0.0, 0.0, 0.0);
