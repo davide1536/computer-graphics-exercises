@@ -9,6 +9,8 @@ void initPlanets(void);
 void init(void);
 void drawPlanets(void);
 void display(void);
+void writeText(void);
+void writeStrokeString(void *font, char *string);
 int  main(int, char**);
 
 /* Uncomment to enable lighting. */
@@ -16,6 +18,9 @@ int  main(int, char**);
 
 /* Uncomment to enable planet orbit animations. */
 #define ANIMATION
+// #define LIGHTING
+#define SLICES      20
+#define STACKS      20
 
 /* Total number of planets in the scene. */
 #define PLANETS_MAX	9
@@ -94,7 +99,7 @@ GLdouble planetRadiuses[PLANETS_MAX] = {
  * TODO redundancy: x coord already referenced by planet's inital x parameter
  */
 GLdouble planetMaxOrbit[PLANETS_MAX][2] = {
-	{0.0, 0.0},			/* Sun */
+	{0.1, 0.1},			/* Sun */
 	{7.0, 5.0},			/* Mercury */
 	{11.0, 10.0},		/* Venus */
 	{16.0, 14.0},		/* Earth */
@@ -107,7 +112,7 @@ GLdouble planetMaxOrbit[PLANETS_MAX][2] = {
 
 /* Materials (lighting). */
 PlanetMaterial planetMaterials[PLANETS_MAX] = {
-	// {{0.5,0.0,1.0},{1.0,1.0,0.0,1.0},{0,0,0,1.0},{20.0}},
+	{{0.5,0.5,1.0},{1.0,1.0,0.0,1.0},{0,0,0,1.0},{20.0}},
 
 	{{0.6,0.3,0.0,1.0},{0.4,0.3,0.5,1.0},{0,0,0,1.0},{20.6}},
 
@@ -129,8 +134,37 @@ PlanetMaterial planetMaterials[PLANETS_MAX] = {
 static Planet planets[PLANETS_MAX];
 static int angle = 0;
 
+void writeStrokeString(void *font, char *string) {
+
+   char *c;
+   for (c = string; *c != '\0'; c++) glutStrokeCharacter(font, *c);
+}
+
+void writeText() {
+	char* PLANETS_NAME[PLANETS_MAX] = {"Sole","Merc.", "Vene.", "Terra", "Marte", "Giove", "Saturno", "Urano", "Nettuno"};
+	for (int i = 0; i<PLANETS_MAX; i++) {
+	float TextPosition = planets[i].x-planets[i].radius/2;
+	glPushMatrix();
+	glColor3f(1.0,1.0,1.0);
+	if (i!=0) {
+	glRotatef((GLfloat) angle, 0.0, 1.0, 0.0); 
+	if (i%2 == 0) 
+		glTranslatef(TextPosition, planets[i].y+5, 0.0);
+	else 
+		glTranslatef(TextPosition, planets[i].y-10, 0.0);
+	glRotatef((GLfloat) -angle, 0.0, 1.0, 0.0);
+	}
+	else {
+		glTranslatef(TextPosition, planets[i].y+5, 0.0);
+	}
+    glScalef(0.02, 0.02, 0.0);
+    writeStrokeString(GLUT_STROKE_ROMAN, PLANETS_NAME[i]);
+    glPopMatrix();
+	}
+}
+
 void rotatePlanetAngle(int val) {
-	angle = (angle + 5) % 360;
+	angle = (angle + 1) % 360;
 	glutPostRedisplay();
 	glutTimerFunc(1000/60, rotatePlanetAngle, angle);
 }
@@ -167,6 +201,7 @@ void rotatePlanetAngle(int val) {
 void drawPlanets() {
 	GLUquadric *quad;
 	quad = gluNewQuadric();
+	
 
 	for(int i = 0; i < PLANETS_MAX; i++) {
 	
@@ -181,11 +216,17 @@ void drawPlanets() {
 		glTranslatef(planets[i].x, planets[i].y, 0.0);
 
 		/* Assign a material to each planet */
-		
+			// if (i==0) {
+			// 	GLfloat brightness[] = {1.0f,1.0f,0.0f,1.0f};
+			// 	glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,brightness);
+			// 	//glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,   planets[i].material.matAmbient);
+			// }
+			//else {
 			glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,   planets[i].material.matAmbient);
 			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,   planets[i].material.matDiffuse);
 			glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,  planets[i].material.matSpecular);
 			glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, planets[i].material.shine);
+			//}
 			/* glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, planetMaterials[i].matAmbient);
 			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, planetMaterials[i].matDiffuse);
 			glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, planetMaterials[i].matSpecular);
@@ -194,8 +235,8 @@ void drawPlanets() {
 		
 
 		/* Draw a sphere */
-		glutWireSphere(planets[i].radius, 20, 20);
-
+		//glutWireSphere(planets[i].radius, 20, 20);
+		 gluSphere(quad, planets[i].radius, SLICES, STACKS);
 		glPopMatrix();
 
 		// draw orbit trail
@@ -214,7 +255,16 @@ void drawPlanets() {
 		glRotatef(90.0, 1.0, 0.0, 0.0);
 		//glColor3f(0.8, 0.8, 0.8);
 
-		glEnable(GL_LIGHT0);
+		//set default materials to draw orbits' lines 
+		float mat_ambient []={0.2, 0.2, 0.2, 1.0};
+    	float mat_diffuse []={ 0.8, 0.8, 0.8, 1.0 };
+    	float mat_specular[] ={ 0.0f, 0.0f, 0.0f, 1.0f };
+    	float shine []= {0};
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, shine);
+		//glColor3f(0, 0, 0); 
 
 		glutWireTorus(.001, planets[i].xMaxOrbit, 100.0, 100.0);
 		glPopMatrix();
@@ -224,15 +274,18 @@ void drawPlanets() {
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	GLfloat lightPos[4] = {0};
+	//GLfloat lightPos[4] = {0};
+	GLfloat lightPos[4] = {0.01,0.1,0,0};
 
 	/* Push initial modelview matrix */
 	glPushMatrix();
 	
 	/* Initialize light position */
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-
+	writeText();
 	/* Draw elements in the scene */
+	glEnable(GL_LIGHT0);
+
 	drawPlanets();
 
 	/* Pop initial modelview matrix */
@@ -274,7 +327,7 @@ void init() {
 
 	
 		// Light init
-		float globAmb[] = {0.0, 0.0, 0.0, 1.0};
+		float globAmb[] = {0.2, 0.2, 0.2, 1.0};
 		float lightAmb[] = {0.2, 0.2,0.2, 1.0};
 		float lightDif[] = {1.0, 1.0, 1.0, 1.0};
 		float lightSpec[] = {1.0, 1.0, 1.0, 1.0};
@@ -295,7 +348,7 @@ void init() {
 	
 
 	// clearing color
-	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClearColor(1.0, 1.0, 1.0, 1.0);
 
 	glEnable(GL_DEPTH_TEST);
 
