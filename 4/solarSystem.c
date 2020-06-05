@@ -18,7 +18,7 @@ int  main(int, char**);
 
 /* Uncomment to enable planet orbit animations. */
 #define ANIMATION
-// #define LIGHTING
+#define LIGHTING
 #define SLICES      20
 #define STACKS      20
 
@@ -145,7 +145,7 @@ void writeText() {
 	for (int i = 0; i<PLANETS_MAX; i++) {
 	float TextPosition = planets[i].x-planets[i].radius/2;
 	glPushMatrix();
-	glColor3f(1.0,1.0,1.0);
+	glColor3f(1.0, 1.0, 1.0);
 	if (i!=0) {
 	glRotatef((GLfloat) angle, 0.0, 1.0, 0.0); 
 	if (i%2 == 0) 
@@ -161,6 +161,13 @@ void writeText() {
     writeStrokeString(GLUT_STROKE_ROMAN, PLANETS_NAME[i]);
     glPopMatrix();
 	}
+	// glDisable(GL_LIGHTING);
+	// glPushMatrix();
+    // glColor3f(1.0, 0.0, 0.0);
+    // glTranslatef(5.0, 5.0, 0.0);
+    // glScalef(0.02, 0.02, 0.0);
+    // writeStrokeString(GLUT_STROKE_ROMAN, "GLUT_STROKE");
+    // glPopMatrix();
 }
 
 void rotatePlanetAngle(int val) {
@@ -254,7 +261,6 @@ void drawPlanets() {
 		glTranslatef(0.0, 0.0, 0.0);
 		glRotatef(90.0, 1.0, 0.0, 0.0);
 		//glColor3f(0.8, 0.8, 0.8);
-
 		//set default materials to draw orbits' lines 
 		float mat_ambient []={0.2, 0.2, 0.2, 1.0};
     	float mat_diffuse []={ 0.8, 0.8, 0.8, 1.0 };
@@ -276,16 +282,19 @@ void display() {
 
 	//GLfloat lightPos[4] = {0};
 	GLfloat lightPos[4] = {0.01,0.1,0,0};
+	/* Initialize light position */
+	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
 	/* Push initial modelview matrix */
 	glPushMatrix();
-	
-	/* Initialize light position */
-	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-	writeText();
-	/* Draw elements in the scene */
-	glEnable(GL_LIGHT0);
 
+	glDisable(GL_LIGHTING);
+
+	writeText();
+
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	/* Draw elements in the scene */
 	drawPlanets();
 
 	/* Pop initial modelview matrix */
@@ -348,7 +357,7 @@ void init() {
 	
 
 	// clearing color
-	glClearColor(1.0, 1.0, 1.0, 1.0);
+	glClearColor(0.0, 0.0, 0.0, 0.0);
 
 	glEnable(GL_DEPTH_TEST);
 
