@@ -1,9 +1,9 @@
-/*
- * This is a simple program that computes FPS
- * by means of a circular buffer
+/* Esercizio 1
+ * Modificare il programma DrawLines in modo da usare 
+ * una proiezione prospettica mantenendo pero’ 
+ * lo stesso output a video.
  */
 #include <GL/glut.h>
-//#include <numeric>
 #include <unistd.h>
 #include <time.h>
 #include <stdio.h>
@@ -19,8 +19,7 @@ float circularBuffer[NELS];
 int firstInd = 0, nEls = 0;
 
 // function to get the number of elapsed ticks
-uint32_t getTick()
-{
+uint32_t getTick() {
     struct timespec ts;
     unsigned theTick = 0U;
     clock_gettime( CLOCK_REALTIME, &ts );
@@ -36,8 +35,7 @@ inline int modulo(int a, int b) {
 }
 
 // Compute sum of the elements in the circular buffer
-float sumCircularBuffer()
-{
+float sumCircularBuffer() {
     int ind;
     float sum = 0;
 
@@ -51,8 +49,7 @@ float sumCircularBuffer()
 }
 
 // accumulate buffer and update window title
-void computeAndShowFrameRate(void)
-{
+void computeAndShowFrameRate(void) {
     static float lastTime = 0.0f;
     static unsigned int frameCount = 0;
     char windowTitle[100];
@@ -135,14 +132,13 @@ int main(int argc, char** argv)
     glutInit(&argc, argv);
 
     // set display mode
-    // GLUT_SINGLE = single buffer window
     glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB);
 
     glutInitWindowSize (400, 400);
     glutInitWindowPosition (100, 100);
     glutCreateWindow ("My first window");
 
-    // Call initialization routinesx
+    // Call initialization routines
     init();
     glutDisplayFunc(display);
     glutMainLoop();

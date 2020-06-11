@@ -1,13 +1,14 @@
-/*
- * This is a simple program that computes FPS
- * by means of a circular buffer
+/* Esercizio 2 - Colore casuale
+ * Stimare, con il codice dato a lezione, la dipendenza dei FPS dal numero di linee e
+ * produrre a schermo un grafico rudimentale della curva che ne risulta.
+ * Ripetere l’esercizio nel caso in cui le linee 
+ * non abbiano un colore uniforme.
  */
 #include <GL/glut.h>
 //#include <numeric>
 #include <unistd.h>
 #include <time.h>
 #include <stdio.h>
-#include <signal.h>
 
 // Y axis scale
 #define Y_SCALE 0.6
@@ -19,7 +20,6 @@
 #define Y_OFFSET 0.3
 #define Z_OFFSET -1
 
-
 // Buffer used to compute frame rate
 float frames[X_POINTS];
 
@@ -27,13 +27,8 @@ int firstInd = 0;
 int nEls = 0;
 int nLines,counter = 0;
 
-void handler(int signal) {
-    exit(0);
-}
-
 // function to get the number of elapsed ticks
-uint32_t getTick()
-{
+uint32_t getTick() {
     struct timespec ts;
     unsigned theTick = 0U;
     clock_gettime( CLOCK_REALTIME, &ts );
@@ -43,18 +38,16 @@ uint32_t getTick()
 }
 
 // Function to compute real modulus and NOT remained as % does
-int modulo(int a, int b) {
+/* int modulo(int a, int b) {
     const int result = a % b;
     return result >= 0 ? result : result + b;
-}
+} */
 
 // accumulate buffer and update window title
-int computeAndShowFrameRate(void)
-{
+int computeAndShowFrameRate(void) {
     static float lastTime = 0.0f;
     static unsigned int frameCount = 0;
     char windowTitle[100];
-    float sumFPS;
 
     float currentTime = (float)getTick() * 0.001f; //da ms a sec
     // Initialize lastTime to the current time
@@ -73,8 +66,6 @@ int computeAndShowFrameRate(void)
         lastTime = currentTime;
         frameCount = 0;
 
-        // sum elements in circular buffer
-        //sumFPS = sumCircularBuffer(); //calcolo per un solo valore
         snprintf(windowTitle, 100, "FPS = %6.2f", frames[counter]);
         // update window title
         nLines += 10000;
@@ -103,7 +94,7 @@ void drawSimplePlot() {
     for (i = 1; i <= X_POINTS; i++) {
         glBegin(GL_POINTS);
             glColor3f(1,1, 1);
-            glVertex3f( ((float)i/X_POINTS)+X_OFFSET, Y_OFFSET, Z_OFFSET );
+            glVertex3f(((float)i/X_POINTS)+X_OFFSET, Y_OFFSET, Z_OFFSET );
         glEnd();
     }
 
@@ -119,12 +110,10 @@ void drawSimplePlot() {
 }
 
 // display function
-void display(void)
-{
+void display(void) {
     // get current frame rate
     computeAndShowFrameRate();
     // clear buffer
-    //glClearColor ((float)rand()/RAND_MAX,(float)rand()/RAND_MAX,(float)rand()/RAND_MAX, 0.0);
     glClear(GL_COLOR_BUFFER_BIT);
     
     if(counter < X_POINTS)  // this will allow the curve to end with the last X axis point (specified by X_POINT)
@@ -137,8 +126,7 @@ void display(void)
 }
 
 // initialization function
-void init (void)
-{
+void init (void) {
     // Use current time as seed for random generator
     srand(time(0));
 
@@ -149,11 +137,9 @@ void init (void)
     // Orthographic projection
     glOrtho(0.0f, 1.0, 0.0f , 1.0, 0.0f, 1.0);
 }
-// Window size and mode
-int main(int argc, char** argv)
-{
-    signal(SIGINT, handler);
 
+// Window size and mode
+int main(int argc, char** argv) {
     // pass potential input arguments to glutInit
     glutInit(&argc, argv);
 
