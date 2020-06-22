@@ -106,7 +106,7 @@ GLdouble planetMaxOrbit[PLANETS_MAX][2] = {
 // Materials (lighting).
 planet_material_t planetMaterials[PLANETS_MAX] = {
 	// Sun
-	{{0.5,0.5,1.0},{1.0,1.0,0.0,1.0},{0,0,0,1.0},{20.0}},
+	{{1.0,0.5,0.1,0},{1.0,1.0,0.0,1.0},{0,0,0,1.0},{20.0}},
 	// Mercury
 	{{0.6,0.3,0.0,1.0},{0.4,0.3,0.5,1.0},{0,0,0,1.0},{20.6}},
 	// Venus
@@ -275,7 +275,7 @@ void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//GLfloat lightPos[4] = {0};
-	GLfloat lightPos[4] = {0.01,0.1,0,0};
+	GLfloat lightPos[4] = {0.01,0.1,0,1};
 	/* Initialize light position */
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
