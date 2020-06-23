@@ -2,6 +2,8 @@
  * Modificare il programma DrawLines in modo da usare 
  * una proiezione prospettica mantenendo pero’ 
  * lo stesso output a video.
+ * 
+ * gcc -lGL -lglut frustum.cpp
  */
 #include <GL/glut.h>
 #include <unistd.h>
@@ -86,8 +88,7 @@ void computeAndShowFrameRate(void) {
 }
 
 // display function
-void display(void)
-{
+void display(void) {
     int currLineInd;
 
     // get current frame rate
@@ -114,8 +115,7 @@ void display(void)
 }
 
 // initialization function
-void init (void)
-{
+void init (void) {
     // Use current time as seed for random generator
     srand(time(0));
 
@@ -134,9 +134,9 @@ int main(int argc, char** argv)
     // set display mode
     glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB);
 
-    glutInitWindowSize (400, 400);
-    glutInitWindowPosition (100, 100);
-    glutCreateWindow ("My first window");
+    glutInitWindowSize(400, 400);
+    glutInitWindowPosition(100, 100);
+    glutCreateWindow("DrawLines (frustum)");
 
     // Call initialization routines
     init();

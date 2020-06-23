@@ -77,7 +77,7 @@ GLdouble planetColors[PLANETS_MAX][3] = {
 
 // Radius of every planet.
 GLdouble planetRadiuses[PLANETS_MAX] = {
-	4.0,				// Sun
+	5.0,				// Sun
 	1.0,				// Mercury
 	1.5,				// Venus
 	2.0,				// Earth
@@ -93,14 +93,14 @@ GLdouble planetRadiuses[PLANETS_MAX] = {
  */
 GLdouble planetMaxOrbit[PLANETS_MAX][2] = {
 	{0.1, 0.1},			// Sun
-	{7.0, 5.0},			// Mercury
-	{11.0, 9.0},		// Venus
-	{16.0, 14.0},		// Earth
+	{9.0, 7.0},			// Mercury
+	{13.0, 11.0},		// Venus
+	{18.0, 16.0},		// Earth
 	{24.0, 22.0},		// Mars
-	{28.0, 26.0},		// Jupiter
-	{37.0, 34.0},		// Saturn
-	{41.5, 38.5},		// Uranus
-	{45.6, 42.0},		// Neptune
+	{31.0, 29.0},		// Jupiter
+	{39.0, 36.0},		// Saturn
+	{45.5, 42.5},		// Uranus
+	{50.6, 47.0},		// Neptune
 };
 
 // Materials (lighting).
@@ -143,8 +143,8 @@ float planetSpeed[PLANETS_MAX] = {
 	1.0,
 	0.5,
 	0.3,
-	-0.2,
-	-0.1
+	0.2,
+	0.1
 };
 
 // Planet names to be written.
@@ -170,7 +170,7 @@ void writeStrokeString(void *font, char *string) {
 
 void writeText() {
 	float TextPosition;
-	for(int i = 0; i<PLANETS_MAX; i++) {
+	for(int i = 1; i<PLANETS_MAX; i++) {
 		TextPosition = planets[i].x-planets[i].radius/2;
 		
 		glPushMatrix();
@@ -204,30 +204,16 @@ void loopPlanets(int val) {
 	
 	for(int i = 1; i < PLANETS_MAX; i++) {
 		//planets[i].currentAngle += planets[i].speed % (float)360.0;
-		planets[i].currentAngle += planets[i].speed;
-		if(planets[i].currentAngle > 360.0)
-			planets[i].currentAngle -= 360;
+		planets[i].currentAngle -= planets[i].speed;
+		if(planets[i].currentAngle < 360.0)
+			planets[i].currentAngle += 360;
 
-		planets[i].x = cos(planets[i].currentAngle*DEG2RAD)*planets[i].xMaxOrbit;
-		planets[i].y = sin(planets[i].currentAngle*DEG2RAD)*planets[i].yMaxOrbit;
+		planets[i].x = -cos(planets[i].currentAngle*DEG2RAD)*planets[i].xMaxOrbit;
+		planets[i].y = -sin(planets[i].currentAngle*DEG2RAD)*planets[i].yMaxOrbit;
 	}
 	
 	glutPostRedisplay();
 	glutTimerFunc(TIMEOUT, loopPlanets, 0);
-
-/*      float degInRad;
-	for(int i = 1; i < PLANETS_MAX; i++) {
-		planets[i].currentAngle = planets[i].currentAngle > 359 ? 0 : planets[i].currentAngle + 1;
-
-		planets[i].x = cos(planets[i].currentAngle*DEG2RAD)*planets[i].xMaxOrbit;
-		planets[i].y = sin(planets[i].currentAngle*DEG2RAD)*planets[i].xMaxOrbit;
-		glPushMatrix();
-		glTranslatef(planets[i].x, planets[i].y,0.0f);
-		glRotatef(angle,0.0f,1.0f,0.0f);
-		glutSolidSphere(); //????
-		glPopMatrix();
-	}
- */	
 }
 
 void drawPlanets() {
@@ -260,14 +246,18 @@ void drawPlanets() {
 		glRotatef(90.0, 1.0, 0.0, 0.0);
 		
 		// Draw orbit trail
+		glDisable(GL_LIGHTING);
+		glDisable(GL_LIGHT0);
 		glBegin(GL_POINTS);
-			glColor3f(0.8, 0.8, 0.8);
+			glColor3f(planets[i].r, planets[i].g, planets[i].b);
 			for(int j = 0; j < 360; j++) {
 				float degInRad = j*DEG2RAD;
 				glVertex3f(cos(degInRad)*planets[i].xMaxOrbit, sin(degInRad)*planets[i].yMaxOrbit, 0.0);
 			}
 		glEnd();
 		glPopMatrix();
+		glEnable(GL_LIGHTING);
+		glEnable(GL_LIGHT0);
 	}
 }
 

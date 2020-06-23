@@ -31,7 +31,7 @@ int nLines,counter = 0;
 uint32_t getTick() {
     struct timespec ts;
     unsigned theTick = 0U;
-    clock_gettime( CLOCK_REALTIME, &ts );
+    clock_gettime(CLOCK_REALTIME, &ts);
     theTick  = ts.tv_nsec / 1000000;
     theTick += ts.tv_sec * 1000;
     return theTick;
@@ -44,7 +44,7 @@ uint32_t getTick() {
 } */
 
 // accumulate buffer and update window title
-int computeAndShowFrameRate(void) {
+void computeAndShowFrameRate(void) {
     static float lastTime = 0.0f;
     static unsigned int frameCount = 0;
     char windowTitle[100];
