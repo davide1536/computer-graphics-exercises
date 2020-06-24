@@ -13,7 +13,7 @@
 // number of vertices per face
 #define NVERTICES       24
 
-/* Uncomment only ONE of the following macros */
+// Scommentare UNA SOLA delle seguenti macro
 #define MODE_TRIANGLES
 //#define MODE_VBO
 //#define MODE_DRAWARRAYS
@@ -453,10 +453,10 @@ void init (void)
 	/* buffer[1]: colorArray indexes */
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[1]);
 
-		for(int currInd=1; currInd < NFACES*NVERTICES; currInd++) 
+		for(int currInd=0; currInd < NFACES*NVERTICES; currInd++) 
 			vertexIndices[currInd]=currInd;
-		vertexIndices[0] = 3;
-		
+/* 		vertexIndices[0] = 3;
+ */		
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(vertexIndices), vertexIndices, GL_STATIC_DRAW);
 		glVertexPointer(3, GL_FLOAT, 0, 0);
 		glColorPointer(3, GL_FLOAT, 0, (GLvoid*)(sizeof(vertexArray)));
