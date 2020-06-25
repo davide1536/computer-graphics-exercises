@@ -239,6 +239,7 @@ void drawPlanets() {
 		glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, planets[i].material.shine);
 
 		// Draw a sphere
+		gluQuadricNormals(quad, GLU_SMOOTH);
 		gluSphere(quad, planets[i].radius, SLICES, STACKS);
 		glPopMatrix();
 
@@ -364,6 +365,7 @@ void init() {
 	gluLookAt(0.0, 70.0, 50.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
 	glShadeModel(GL_SMOOTH);
+	glEnable(GL_NORMALIZE);
 
 	// glutTimerFunc(1000/60, rotatePlanetAngle, angle);
 	glutTimerFunc(TIMEOUT, loopPlanets, 0);
